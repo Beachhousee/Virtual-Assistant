@@ -2,14 +2,16 @@ import React, { createContext } from "react";
 export const userDataContext = createContext();
 function UserContext({ children }) {
   const serverUrl = "http://localhost:8000";
-const value={
-serverUrl
-}
+  const value = {
+    serverUrl,
+  };
   return (
-      <div>
-        <userDataContext.Provider value={value}>{children}</userDataContext.Provider>
-      </div>
-  )
+    <div>
+      <userDataContext.Provider value={value}>
+        {children}
+      </userDataContext.Provider>
+    </div>
+  );
 }
 
 export default UserContext;

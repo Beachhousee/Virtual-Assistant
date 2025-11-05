@@ -7,7 +7,7 @@ const authRouter = express.Router();
 authRouter.post("/signup", signUp);
 
 // POST   /api/users/login   → Authenticate user
-authRouter.post("/login", Login);
+authRouter.post("/signin", Login);
 
 // GET    /api/users/logout  → Clear cookie & log out
 authRouter.get("/logout", logOut);
