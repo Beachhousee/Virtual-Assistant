@@ -13,3 +13,4 @@ authRouter.post("/login", Login);
 authRouter.get("/logout", logOut);
 
 export default authRouter;
+//we are exporing the authRouter
