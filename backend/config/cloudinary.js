@@ -9,6 +9,7 @@ const uploadOnCloudinary = async (filePath) => {
     api_secret: process.env.CLOUDINARY_API_SECRET,
   });
 
+  
   try {
     const uploadResult = await cloudinary.uploader.upload(filePath);
     fs.unlinkSync(filePath);

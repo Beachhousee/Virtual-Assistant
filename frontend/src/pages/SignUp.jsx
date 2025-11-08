@@ -16,7 +16,7 @@ function SignUp() {
   const [err, setErr] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { serverUrl } = useContext(userDataContext);
+  const { serverUrl,userData,setUserData   } = useContext(userDataContext);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -33,9 +33,11 @@ function SignUp() {
         { withCredentials: true }
 
       );
-      console.log(result.data);
+    setUserData(result.data)
       setLoading(false);
+      navigate('/customize')
     } catch (error) {
+      setUserData(null)
       console.log(error);
       setLoading(false);
       setErr(

@@ -15,7 +15,7 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
-  const { serverUrl } = useContext(userDataContext);
+  const { serverUrl,userData,setUserData }= useContext(userDataContext);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -30,9 +30,11 @@ function SignIn() {
         },
         { withCredentials: true }
       );
-      console.log(result.data);
+      setUserData(result.data)
       setLoading(false);
+      navigate('/')
     } catch (error) {
+      setUserData(null);
       console.log(error);
       setLoading(false);
       setErr(
