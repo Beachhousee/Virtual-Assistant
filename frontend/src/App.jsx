@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Customize from "./pages/Customize";
+import Customize2 from "./pages/Customize2";
 import { userDataContext } from "./context/userContext";
 import { Navigate } from "react-router-dom";
 
@@ -32,6 +33,10 @@ function App() {
         <Route
           path="/customize"
           element={userData ? <Customize /> : <Navigate to="/signin" />}
+        />
+          <Route
+          path="/customize2"
+          element={userData ? <Customize2 /> : <Navigate to="/signin" />}
         />
       </Routes>
     </div>
