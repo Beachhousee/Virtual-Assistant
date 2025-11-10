@@ -1,19 +1,55 @@
-import React from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { userDataContext } from "../context/userContext";
-import { useState, useContext } from "react";
+import { MdKeyboardBackspace } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 function Customize2() {
+  const { userData, backendImage, selectedImage, serverUrl, setUserData } =
+    useContext(userDataContext);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { userData } = useContext(userDataContext);
   const [assistantName, setAssistantName] = useState(
-    userData?.AssistantName || ""
+    userData?.assistantName || ""
   );
+
+  useEffect(() => {
+    if (userData?.assistantName) setAssistantName(userData.assistantName);
+  }, [userData]);
+
+  const handleUpdateAssistant = async () => {
+    setLoading(true)
+    try {
+      let formData = new FormData();
+      formData.append("assistantName", assistantName);
+      if (backendImage) {
+        formData.append("assistantImage", backendImage);
+      } else {
+        formData.append("imageUrl", selectedImage);
+      }
+      const result = await axios.post(
+        `${serverUrl}/api/user/update`,
+        formData,
+        { withCredentials: true }
+      );
+      setLoading(false)
+      console.log(result.data);
+      setUserData(result.data);
+      navigate('/')
+    } catch (error) {
+      setLoading(false)
+      console.log(error);
+    }
+  };
   return (
     <div className="w-full h-[100vh] bg-gradient-to-t from-black to-[#030353] flex justify-center items-center flex-col p-[20px]">
+      <MdKeyboardBackspace
+        className="absolute top-[30px] cursor-pointer left-[30px] text-white w-[25px] h-[25px]"
+        onClick={() => navigate("/customize")}
+      />
       <h1 className="text-white mb-[40px] text-[30px] text-center">
         Enter Your <span className="text-blue-200">Assistant Name</span>
       </h1>
+
       <input
         type="text"
         placeholder="eg. shifra"
@@ -25,9 +61,12 @@ function Customize2() {
       {assistantName.trim() && (
         <button
           className="min-w-[300px] h-[60px] mt-[30px] text-black font-semibold cursor-pointer bg-white rounded-full text-[19px]"
-        
+          disabled={loading}
+          onClick={() => {
+            handleUpdateAssistant();
+          }}
         >
-          Finally Create Your Assistant
+          {!loading ? "Finally Create Your Assistant" : "Loading"}
         </button>
       )}
     </div>

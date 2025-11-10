@@ -14,7 +14,6 @@ function Card({ image }) {
     selectedImage,
     setSelectedImage,
   } = useContext(userDataContext);
-  
 
   return (
     <div
@@ -31,8 +30,18 @@ function Card({ image }) {
         : "null"
     }
   `}
-    onClick={() => setSelectedImage(image)}
-    ></div>
+      onClick={() => {
+        setSelectedImage(image);
+        setBackendImage(null);
+        setFrontendImage(null);
+      }}
+    >
+      <img
+        src={image}
+        className="h-full object-cover"
+        alt="assistant preview"
+      />
+    </div>
   );
 }
 

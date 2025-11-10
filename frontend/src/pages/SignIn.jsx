@@ -1,7 +1,5 @@
-import React from "react";
-import { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { userDataContext } from "../context/userContext";
-import { useState } from "react";
 import bg from "../assets/authBg.png";
 import axios from "axios";
 import { IoEyeOff } from "react-icons/io5";
@@ -15,7 +13,7 @@ function SignIn() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
-  const { serverUrl,userData,setUserData }= useContext(userDataContext);
+  const { serverUrl, setUserData } = useContext(userDataContext);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -30,9 +28,9 @@ function SignIn() {
         },
         { withCredentials: true }
       );
-      setUserData(result.data)
+      setUserData(result.data);
       setLoading(false);
-      navigate('/')
+      navigate("/");
     } catch (error) {
       setUserData(null);
       console.log(error);
@@ -49,7 +47,7 @@ function SignIn() {
       style={{ backgroundImage: `url(${bg})` }}
     >
       <form
-        className="w-[90%] h-[600px] max-w-[500px] bg-[#0000062] backdrop-blur shadow-lg shadow-black flex flex-col items-center justify-center gap-[20px] px-[20px]"
+        className="w-[90%] h-[600px] max-w-[500px] bg-[#000062] backdrop-blur shadow-lg shadow-black flex flex-col items-center justify-center gap-[20px] px-[20px]"
         onSubmit={handleSignIn}
       >
         <h1 className="text-white text-[30px] font-semibold mb-[30px]">
@@ -96,7 +94,7 @@ function SignIn() {
           className="min-w-[150px] h-[60px] mt-[30px] text-black font-semibold bg-white rounded-full text-[19px]"
           disabled={loading}
         >
-          {loading ? "loading..." : "Sign-in"}
+          {loading ? "loading..." : "Sign In"}
         </button>
         <p
           className="text-[white] text-[18px] cursor-pointer"

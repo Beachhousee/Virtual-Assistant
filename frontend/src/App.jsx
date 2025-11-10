@@ -6,7 +6,7 @@ import Customize from "./pages/Customize";
 import Customize2 from "./pages/Customize2";
 import { userDataContext } from "./context/userContext";
 import { Navigate } from "react-router-dom";
-
+import Home from "./pages/Home";
 function App() {
   const { userData, setUserData } = useContext(userDataContext);
   return (
@@ -24,7 +24,7 @@ function App() {
         />
         <Route
           path="/signup"
-          element={!userData ? <SignUp /> : <Navigate to="/" />}
+          element={!userData ? <SignUp /> : <Navigate to="/customize" />}
         />
         <Route
           path="/signin"
@@ -32,11 +32,11 @@ function App() {
         />
         <Route
           path="/customize"
-          element={userData ? <Customize /> : <Navigate to="/signin" />}
+          element={userData ? <Customize /> : <Navigate to="/signup" />}
         />
           <Route
           path="/customize2"
-          element={userData ? <Customize2 /> : <Navigate to="/signin" />}
+          element={userData ? <Customize2 /> : <Navigate to="/signup" />}
         />
       </Routes>
     </div>

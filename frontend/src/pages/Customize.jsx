@@ -2,6 +2,7 @@ import React from "react";
 import { useRef } from "react";
 import { useContext } from "react";
 import { userDataContext } from "../context/userContext";
+import { MdKeyboardBackspace } from "react-icons/md";
 import Card from "../components/Card";
 import image1 from "../assets/image1.png";
 import image2 from "../assets/image2.jpg";
@@ -25,7 +26,7 @@ function Customize() {
     selectedImage,
     setSelectedImage,
   } = useContext(userDataContext);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const inputImage = useRef();
 
   const handleImage = (e) => {
@@ -60,6 +61,10 @@ function Customize() {
             setSelectedImage("input");
           }}
         >
+          <MdKeyboardBackspace
+            className="absolute top-[30px] cursor-pointer left-[30px] text-white w-[25px] h-[25px]"
+            onClick={() => navigate("/")}
+          />
           {!frontendImage && (
             <RiImageAddLine className="text-white w-[25px] h-[25px]" />
           )}
@@ -77,10 +82,12 @@ function Customize() {
       </div>
 
       {selectedImage && (
-        <button className="min-w-[150px] h-[60px] mt-[30px] text-black font-semibold bg-white rounded-full text-[19px]" onClick={()=> navigate('/customize2')}>
+        <button
+          className="min-w-[150px] h-[60px] mt-[30px] text-black font-semibold bg-white rounded-full text-[19px]"
+          onClick={() => navigate("/customize2")}
+        >
           Next
         </button>
-        
       )}
     </div>
   );
