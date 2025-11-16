@@ -1,7 +1,7 @@
 import express from "express";
 import isAuth from "../middlewares/isAuth.js";
 import upload from "../middlewares/multer.js";
-import { getCurrentUser } from "../controllers/user.controller.js";
+import { askToAssistant, getCurrentUser } from "../controllers/user.controller.js";
 import { updateAssistant } from "../controllers/user.controller.js";
 
 const userRouter = express.Router();
@@ -12,5 +12,6 @@ userRouter.post(
   upload.single("assistantImage"),
   updateAssistant
 );
+userRouter.post('/asktoassistant',isAuth,askToAssistant )
 
 export default userRouter;
