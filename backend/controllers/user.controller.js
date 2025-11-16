@@ -51,7 +51,7 @@ export const askToAssistant = async (req, res) => {
     const userName = user.name;
 
     const assistantName = user.assistantName;
-    const result = await geminiResponse(command,assistantName, userName  );
+    const result = await geminiResponse(command,assistantName, userName);
     const jsonMatch = result.match(/{[\s\S]*}/);
     if (!jsonMatch) {
       return res.status(400).json({ response: "sorry, i can't understand" });
@@ -60,7 +60,7 @@ export const askToAssistant = async (req, res) => {
     const type = gemResult.type;
 
     switch (type) {
-      case "get_date":
+      case "get-date":
         return res.json({
           type,
           userInput: gemResult.userInput,
@@ -73,27 +73,27 @@ export const askToAssistant = async (req, res) => {
           userInput: gemResult.userInput,
           response: `current time is ${moment().format("hh:mm A")}`,
         });
-      case "get_day":
+      case "get-day":
         return res.json({
           type,
           userInput: gemResult.userInput,
           response: `today is ${moment().format("dddd")}`,
         });
 
-      case "get_month":
+      case "get-month":
         return res.json({
           type,
           userInput: gemResult.userInput,
           response: `today is ${moment().format("MMMM")}`,
         });
-      case "google_search":
-      case "youtube_search":
-      case "youtube_play":
+      case "google-search":
+      case "youtube-search":
+      case "youtube-play":
       case "general":
-      case "calculator_open":
-      case "instagram_open":
-      case "facebook_open":
-      case "weather_show":
+      case "calculator-open":
+      case "instagram-open":
+      case "facebook-open":
+      case "weather-show":
         return res.json({
           type,
           userInput: gemResult.userInput,
