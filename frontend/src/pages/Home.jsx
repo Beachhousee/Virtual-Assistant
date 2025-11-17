@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { useState } from "react";
+
 import userImg from "../assets/ai.gif";
 import aiImg from "../assets/user.gif";
 function Home() {
@@ -16,6 +17,7 @@ function Home() {
   const [aiText, setAiText] = useState("");
   const isSpeakingRef = useRef(false);
   const recognitionRef = useRef(null);
+  const isRecognizingRef = useRef(false);
   const synth = window.speechSynthesis;
   const handleLogOut = async () => {
     try {
@@ -49,7 +51,7 @@ function Home() {
     }
     isSpeakingRef.current = true;
     utterance.onend = () => {
-      setAiText("")
+      setAiText("");
       isSpeakingRef.current = false;
       startRecognition();
     };
@@ -199,6 +201,10 @@ function Home() {
       </h1>
       {!aiText && <img src={userImg} alt="" className="w-[200px]" />}
       {aiText && <img src={aiImg} alt="" className="w-[200px]" />}
+
+      <h1 className="text-white text-[18px] font-semibold text-wrap">
+        {userText ? userText : aiText ? aiText : null}
+      </h1>
     </div>
   );
 }
