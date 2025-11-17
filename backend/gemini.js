@@ -1,5 +1,5 @@
-import axios from 'axios'
-const geminiResponse= async(command,assistantName,userName)=>{
+import axios from "axios";
+const geminiResponse = async (command, assistantName, userName) => {
   try {
     const apiUrl = process.env.GEMINI_API_URL;
     const prompt = `You are a virtual assistant named ${assistantName} created by ${userName}.
@@ -21,6 +21,7 @@ Instructions:
 
 Type meanings:
 - "general": if it's a factual or informational question.
+   aur agar koi aisa question puchta hai jiska answer tume pata hai usko bhi general ki category me rakho bas short answer dena
 - "google-search": if user wants to search something on Google.
 - "youtube-search": if user wants to search something on YouTube.
 - "youtube-play": if user wants to directly play a video or song.
@@ -37,21 +38,22 @@ Important:
 - Use ${userName} agar koi puche tume kisne banaya
 - Only respond with the JSON object, nothing else.
 
-now your userInput- ${command }
+now your userInput- ${command}
 `;
-    const result = await axios.post(apiUrl,{
-        "contents": [
-      {
-        "parts": [
-          {
-            "text":prompt
-          }
-        ]
-      }]
-    })
-    return result.data.candidates[0].content.parts[0].text
+    const result = await axios.post(apiUrl, {
+      contents: [
+        {
+          parts: [
+            {
+              text: prompt,
+            },
+          ],
+        },
+      ],
+    });
+    return result.data.candidates[0].content.parts[0].text;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 export default geminiResponse;

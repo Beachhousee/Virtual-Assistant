@@ -5,11 +5,15 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { useState } from "react";
+import userImg from "../assets/ai.gif";
+import aiImg from "../assets/user.gif";
 function Home() {
   const { userData, serverUrl, setUserData, getGeminiResponse } =
     useContext(userDataContext);
   const navigate = useNavigate();
   const [listening, setListening] = useState(false);
+  const [userText, setUserText] = useState("");
+  const [aiText, setAiText] = useState("");
   const isSpeakingRef = useRef(false);
   const recognitionRef = useRef(null);
   const synth = window.speechSynthesis;
@@ -45,6 +49,7 @@ function Home() {
     }
     isSpeakingRef.current = true;
     utterance.onend = () => {
+      setAiText("")
       isSpeakingRef.current = false;
       startRecognition();
     };
@@ -139,12 +144,16 @@ function Home() {
       const transcript = e.results[e.results.length - 1][0].transcript.trim();
       console.log("heard : " + transcript);
       if (transcript.toLowerCase().includes(userData.toLowerCase())) {
+        setAiText("");
+        setUserText(transcript);
         recognition.stop();
         isRecognizingRef.current = false;
         setListening(false);
 
         const data = await getGeminiResponse(transcript);
-        console.log(data) - handleCommand(data);
+        handleCommand(data);
+        setAiText(data.response);
+        setUserText("");
       }
     };
 
@@ -186,8 +195,10 @@ function Home() {
         />
       </div>
       <h1 className="text-white text-[18px] font-semibold">
-        I'm {userData.assistantName}
+        I'm {userData?.assistantName}
       </h1>
+      {!aiText && <img src={userImg} alt="" className="w-[200px]" />}
+      {aiText && <img src={aiImg} alt="" className="w-[200px]" />}
     </div>
   );
 }
