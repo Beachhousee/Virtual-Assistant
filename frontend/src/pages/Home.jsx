@@ -5,7 +5,9 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { useState } from "react";
+import { CgMenuRight } from "react-icons/cg";
 
+import { RxCross1 } from "react-icons/rx";
 import userImg from "../assets/ai.gif";
 import aiImg from "../assets/user.gif";
 function Home() {
@@ -18,6 +20,7 @@ function Home() {
   const isSpeakingRef = useRef(false);
   const recognitionRef = useRef(null);
   const isRecognizingRef = useRef(false);
+  const [ham, setHam] = useState(false);
   const synth = window.speechSynthesis;
   const handleLogOut = async () => {
     try {
@@ -175,15 +178,66 @@ function Home() {
   }, []);
   return (
     <div className="w-full h-[100vh] bg-gradient-to-t from-black to-[#02023d] flex justify-center items-center flex-col gap-[15px]">
+      <CgMenuRight
+        className="lg:hidden text-white absolute top-[20px] right-[20px] w-[25px] h-[25px]"
+        onClick={() => setHam(true)}
+      />
+      <div
+        className={`
+    absolute top-0 w-full h-full 
+    bg-[#00000053] backdrop-blur-lg p-[20px] 
+    flex flex-col gap-[20px] items-start 
+    ${ham ? "translate-x-0" : "translate-x-full"}
+    transition-transform
+  `}
+      >
+        <RxCross1
+          className="text-white absolute top-[20px] right-[20px] w-[25px] h-[25px]"
+          onClick={() => setHam(false)}
+        />
+
+        <button
+          className="min-w-[150px] h-[60px] text-black font-semibold bg-white rounded-full cursor-pointer text-[19px]"
+          onClick={handleLogOut}
+        >
+          Log Out
+        </button>
+
+        <button
+          className="min-w-[150px] h-[60px] text-black font-semibold bg-white rounded-full cursor-pointer text-[19px] px-[20px] py-[10px]"
+          onClick={() => navigate("/customize")}
+        >
+          Customize your Assistant
+        </button>
+        <div className="w-full h-[2px] bg-gray-400" />
+
+        <h1 className="text-white font-semibold text-[19px]">History</h1>
+        <div className="w-full h-[400px] gap-[20px] overflow-y-auto flex flex-col">
+          {userData.history?.map((his) => (
+            <span className="text-gray-200 text-[18px] truncate">{his}</span>
+          ))}
+        </div>
+
+        <div className="w-full h-[400px] gap-[20px] overflow-y-auto flex flex-col truncate">
+          {userData.history?.map((his) => (
+            <div
+              key={his}
+              className="text-gray-200 text-[18px] w-full h-[30px]"
+            >
+              {his}
+            </div>
+          ))}
+        </div>
+      </div>
       <button
-        className="min-w-[150px] h-[60px] mt-[30px] text-black font-semibold absolute top-[20px] right-[20px] bg-white rounded-full text-[19px]"
+        className="min-w-[150px] h-[60px] mt-[30px] text-black hidden lg:block font-semibold absolute top-[20px] right-[20px] bg-white rounded-full text-[19px]"
         onClick={handleLogOut}
       >
         Log Out
       </button>
 
       <button
-        className="min-w-[150px] h-[60px] mt-[30px] text-black font-semibold bg-white absolute top-[100px] right-[20px] rounded-full text-[19px] px-[20px] py-[10px]"
+        className="min-w-[150px] h-[60px] mt-[30px] text-black hidden lg:block font-semibold bg-white absolute top-[100px] right-[20px] rounded-full text-[19px] px-[20px] py-[10px]"
         onClick={() => navigate("/customize")}
       >
         Customize your Assistant
