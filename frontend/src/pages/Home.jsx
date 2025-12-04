@@ -35,12 +35,14 @@ function Home() {
     }
   };
   const startRecognition = () => {
-    try {
-      recognitionRef.current?.start();
-      setListening(true);
-    } catch (error) {
-      if (!error.message.includes("start")) {
-        console.error("Recognition error:", error);
+    if (!isSpeakingRef.current && !isRecognizingRef.current) {
+      try {
+        recognitionRef.current?.start();
+        console.log("Recognition requested to start");
+      } catch (error) {
+        if (error.name === "InvalidStateError") {
+          console.error("Start error:", error);
+        }
       }
     }
   };
@@ -56,8 +58,11 @@ function Home() {
     utterance.onend = () => {
       setAiText("");
       isSpeakingRef.current = false;
-      startRecognition();
+      setTimeout(() => {
+        startRecognition();
+      }, 800);
     };
+    synth.cancel();
     synth.speak(utterance);
   };
   const handleCommand = (data) => {
@@ -97,10 +102,25 @@ function Home() {
 
     const recognition = new SpeechRecognition();
     recognition.continuous = true;
+    recognition.interimResults = false;
     recognition.lang = "en-US";
     recognitionRef.current = recognition;
-    const isRecognizingRef = { current: false };
-    recognitionRef.current = recognition;
+
+    const isRecognizingRef = { current: false }; // watch later on
+
+    let isMounted = true;
+    const startTimeout = setTimeout(() => {
+      if (isMounted && !isSpeakingRef.current && !isRecognizingRef.current) {
+        try {
+          recognition.start();
+          console.log("Recognition requested to start");
+        } catch (e) {
+          if (e.name === "InvalidStateError") {
+            console.error(e);
+          }
+        }
+      }
+    }, 1000);
 
     const safeRecognition = () => {
       if (!isSpeakingRef.current && !isRecognizingRef.current) {
@@ -122,25 +142,38 @@ function Home() {
     };
 
     recognition.onend = () => {
-      console.log("Recognition ended");
       isRecognizingRef.current = false;
       setListening(false);
-    };
 
-    if (!isSpeakingRef.current) {
-      setTimeout(() => {
-        safeRecognition();
-      }, 1000); // delay avoids rapid loop
-    }
+      if (isMounted && !isSpeakingRef.current) {
+        setTimeout(() => {
+          if (isMounted) {
+            try {
+              recognition.start();
+              console.log("Recognition restarted");
+            } catch (e) {
+              if (e.name !== "InvalidStateError") console.error(e);
+            }
+          }
+        }, 1000);
+      }
+    };
 
     recognition.onerror = (event) => {
       console.warn("Recognition error:", event.error);
       isRecognizingRef.current = false;
       setListening(false);
 
-      if (event.error !== "aborted" && !isSpeakingRef.current) {
+      if (event.error !== "aborted" && isMounted && !isSpeakingRef.current) {
         setTimeout(() => {
-          safeRecognition();
+          if (isMounted) {
+            try {
+              recognition.start();
+              console.log("Recognition restarted after error");
+            } catch (e) {
+              if (e.name !== "InvalidStateError") console.error(e);
+            }
+          }
         }, 1000);
       }
     };
@@ -168,8 +201,17 @@ function Home() {
       }
     }, 10000);
     safeRecognition();
+    const greeting = new SpeechSynthesisUtterance(
+      `Hello ${userData.name}, what can I help you with?`
+    );
+
+    greeting.lang = "hi-IN";
+
+    window.speechSynthesis.speak(greeting);
 
     return () => {
+      isMounted = false;
+      clearTimeout(startTimeout);
       recognition.stop();
       setListening(false);
       isRecognizingRef.current = false;
@@ -177,14 +219,14 @@ function Home() {
     };
   }, []);
   return (
-    <div className="w-full h-[100vh] bg-gradient-to-t from-black to-[#02023d] flex justify-center items-center flex-col gap-[15px]">
+    <div className="w-full h-[100vh] bg-gradient-to-t from-black to-[#02023d] flex justify-center items-center flex-col gap-[15px] overflow-hidden">
       <CgMenuRight
         className="lg:hidden text-white absolute top-[20px] right-[20px] w-[25px] h-[25px]"
         onClick={() => setHam(true)}
       />
       <div
         className={`
-    absolute top-0 w-full h-full 
+    absolute lg:hidden top-0 w-full h-full 
     bg-[#00000053] backdrop-blur-lg p-[20px] 
     flex flex-col gap-[20px] items-start 
     ${ham ? "translate-x-0" : "translate-x-full"}
